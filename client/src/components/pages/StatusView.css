@@ -1,0 +1,12 @@
+.StatusView-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  font-weight: bold;
+  font-size: x-large;
+  color: var(--primary);
+}
+
+.StatusView-header {
+  flex: 1;
+}

@@ -1,0 +1,34 @@
+Company {
+    id: String,
+    robot_ids: List of Strings,
+    user_ids: List of Strings,
+    region: id,
+}
+
+User {
+    id: String,
+    company_id: String,
+    role: String,
+    name: String,
+    email: String,
+}
+
+Robot {
+    id: String,
+    battery: String,
+    gps: String,
+    brushing: Boolean,
+    emergency_stop: Boolean,
+    manual_control: Boolean,
+    manual_forward: Boolean,
+    manual_backwards: Boolean,
+    manual_raise_brushes: Int,
+    manual_activate_brushes: Boolean,
+    mission_ids: List of Strings,
+}
+
+Mission {
+    id: String,
+    waypoints: Array of GPS Strings,
+}
+

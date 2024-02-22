@@ -1,0 +1,20 @@
+router.get("/robots",
+Parameters: {company_id: String})
+Description: return all Robots for a given company
+Retruns: Array of Robots
+
+router.post("/robot"
+Parameters: {company_id: String})
+Description: Create new robot and return to client
+Returns: Robot
+
+router.get("/missions 
+Parameters: {robot_id: Stirng})
+Description: Get all missions associated with a robot
+Returns: Array of missions
+
+router.post("/mission
+Parameters: {robot_id: String, waypoints: Array of String})
+Description: Create new mission with waypoints and return to client
+Retruns: Mission
+

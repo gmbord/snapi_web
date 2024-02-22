@@ -1,0 +1,40 @@
+.Settings-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  font-weight: bold;
+  font-size: x-large;
+  color: var(--primary);
+  border-bottom: 1px solid #ccc; /* Add a border to separate header and user rows */
+}
+
+.Settings-header {
+  flex: 1;
+}
+
+.UserRow-container {
+  display: flex;
+  flex-direction: column; /* Change to column to stack user rows vertically */
+  padding: 10px;
+}
+
+.UserRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Align items vertically in the user row */
+  padding: 10px;
+  border-bottom: 1px solid #ccc; /* Add a border to separate user rows */
+}
+
+.UserRow-item {
+  flex: 1;
+  margin-right: 10px; /* Add some spacing between name and dropdown */
+}
+
+.UserRow-item:last-child {
+  margin-right: 0; /* Remove margin for the last child to avoid extra spacing */
+}
+
+.UserRow select {
+  width: 150px; /* Set a fixed width for the select dropdown */
+}

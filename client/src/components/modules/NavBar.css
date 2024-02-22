@@ -1,0 +1,49 @@
+.NavBar-container {
+  padding: var(--s) var(--m);
+  background-color: var(--primary);
+}
+
+.NavBar-title {
+  color: var(--white);
+  font-size: 20px;
+}
+
+.NavBar-title-red {
+  color: #ffa4a4;
+  font-size: 20px;
+}
+
+.NavBar-linkContainer {
+  margin-left: var(--l);
+  font-size: larger;
+}
+
+.NavBar-link {
+  color: var(--white);
+  opacity: 0.6;
+  text-decoration: none;
+}
+
+.NavBar-link:visited {
+  color: var(--white);
+  opacity: 0.6;
+  text-decoration: none;
+  text-decoration: underline;
+}
+
+.NavBar-link:hover {
+  opacity: 0.8;
+}
+
+.NavBar-link.NavBar-login {
+  opacity: 1;
+}
+
+.NavBar-link + .NavBar-link {
+  margin-left: var(--m);
+}
+
+.NavBar-GoogleLogin {
+  position: relative;
+  float: right;
+}

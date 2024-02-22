@@ -1,0 +1,14 @@
+.GoogleMaps-button {
+  background-color: var(--primary);
+  color: white; /* Set text color to white for better visibility */
+  padding: 5px 10px; /* Add padding for better button appearance */
+  margin: 0 5px; /* Add margin to space out buttons */
+  border: none;
+  cursor: pointer;
+}
+
+.GoogleMaps-button:disabled {
+  background-color: #ccc; /* Use a different color for disabled state */
+  color: #666; /* Set a different text color for better visibility on disabled buttons */
+  cursor: not-allowed; /* Change cursor style for disabled buttons */
+}
