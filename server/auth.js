@@ -26,8 +26,7 @@ function getOrCreateUser(user) {
     const newUser = new User({
       name: user.name,
       googleid: user.sub,
-      role: "admin",
-      company: "65a965ba3c776cbb9ba12f54",
+      role: "player",
     });
 
     return newUser.save();
