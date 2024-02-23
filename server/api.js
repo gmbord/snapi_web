@@ -11,9 +11,8 @@ const express = require("express");
 
 // import models so we can interact with the database
 const User = require("./models/user");
-const Company = require("./models/company");
-const Robot = require("./models/robot");
-const Mission = require("./models/mission");
+const Game = require("./models/game");
+const Queue = require("./models/queue");
 
 // import authentication library
 const auth = require("./auth");
