@@ -10,9 +10,9 @@
   /* ... other styles */
 }
 
-.InfoView-background {
+/* .InfoView-background {
   background: url("./../../../dist/product_sheet.png") center/cover;
-}
+} */
 
 .InfoView-container {
   display: flex;
