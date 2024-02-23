@@ -10,7 +10,8 @@ import "./InfoView.css";
 const InfoView = ({ userId }) => {
   return (
     <div className="InfoView-container">
-      <h1>THIS IS THE INFO VIEW</h1>
+      <h1>DKE SNAPPA</h1>
+      <h2>LOGIN WITH GOOGLE TO GET STARTED</h2>
     </div>
   );
 };
