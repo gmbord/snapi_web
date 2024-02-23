@@ -9,7 +9,7 @@ const QueueView = (props) => {
 
   const handleEnqueue = () => {
     // Assuming userId is available in props
-    const userId = props.userId; //??????
+    const userId = props.userId; //??????????????????
 
     // Add the user ID to the queue
     const newQueue = [...queue, userId];
@@ -25,7 +25,7 @@ const QueueView = (props) => {
   return (
     <div>
       <h1>This is the Queue Page</h1>
-      <button onClick={handleEnqueue}>Enqueue</button>
+      <button onClick={handleEnqueue}>Queue</button>
       <button onClick={handleDequeue}>Dequeue</button>
       <div>
         <h2>Queue:</h2>
