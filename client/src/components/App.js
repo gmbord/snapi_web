@@ -4,14 +4,12 @@ import { Routes, Route } from "react-router-dom";
 import jwt_decode from "jwt-decode";
 
 import NavBar from "./modules/NavBar.js";
-import MapView from "./pages/MapView.js";
-import StatusView from "./pages/StatusView.js";
-import ManualView from "./pages/ManualView.js";
+import QueueView from "./pages/QueueView.js";
+import ActiveGameView from "./pages/ActiveGameView.js";
+import StatsView from "./pages/StatsView.js";
 import NotFound from "./pages/NotFound.js";
-import Skeleton from "./pages/Skeleton.js";
+import UserSettingsView from "./pages/UserSettingsView.js";
 import InfoView from "./pages/InfoView.js";
-import RobotRow from "./modules/RobotRow.js";
-import Settings from "./pages/Settings.js";
 import "../utilities.css";
 
 import { socket } from "../client-socket.js";
@@ -47,8 +45,6 @@ const App = () => {
     post("/api/logout");
   };
 
-  const [selectedRobotId, setSelectedRobotId] = useState(null);
-
   // Check if the user is not logged in and redirect to "/"
   if (!userId) {
     return (
@@ -71,31 +67,13 @@ const App = () => {
       <div className="App-container">
         <Routes>
           <Route path="/" element={<InfoView path="/info" />} />
+          <Route path="/queue" element={<QueueView path="/queue" />} />
+          <Route path="/active" element={<ActiveGameView path="/active" />} />
+          <Route path="/stats" element={<StatsView path="/stats" />} />
           <Route
-            path="/map"
-            element={
-              <MapView
-                path="/map"
-                selectedRobotId={selectedRobotId}
-                setSelectedRobotId={setSelectedRobotId}
-              />
-            }
+            path="/settings"
+            element={<UserSettingsView path="/settings"></UserSettingsView>}
           />
-          <Route
-            path="/status"
-            element={<StatusView path="/status" setSelectedRobotId={setSelectedRobotId} />}
-          />
-          <Route
-            path="/manualControl"
-            element={
-              <ManualView
-                path="/manualControl"
-                selectedRobotId={selectedRobotId}
-                setSelectedRobotId={setSelectedRobotId}
-              />
-            }
-          />
-          <Route path="/settings" element={<Settings path="/settings"></Settings>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>

@@ -2,17 +2,14 @@ import React, { useEffect, useState } from "react";
 import { socket } from "../../client-socket.js";
 import { get, post } from "../../utilities.js";
 
-import "./InfoView.css";
+import "./ActiveGameView.css";
 
-/**
- *
- */
-const InfoView = ({ userId }) => {
+const ActiveGameView = (props) => {
   return (
-    <div className="InfoView-container">
-      <h1>THIS IS THE INFO VIEW</h1>
+    <div>
+      <h1>This is the Active Game Page</h1>
     </div>
   );
 };
 
-export default InfoView;
+export default ActiveGameView;

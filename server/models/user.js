@@ -3,8 +3,7 @@ const mongoose = require("mongoose");
 const UserSchema = new mongoose.Schema({
   name: String,
   googleid: String,
-  role: { type: String, enum: ["admin", "view_only", "dispatcher", "operator"] },
-  company: { type: mongoose.Types.ObjectId, ref: "Company" },
+  role: { type: String, enum: ["admin", "player"] },
   email: String,
 });
 

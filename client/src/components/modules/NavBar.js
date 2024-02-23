@@ -35,18 +35,18 @@ const NavBar = ({ userId, handleLogin, handleLogout }) => {
 
       {userId && (
         <div className="NavBar-linkContainer u-inlineBlock">
-          <Link to="/map/" className="NavBar-link">
-            Map
+          <Link to="/queue/" className="NavBar-link">
+            Queue
           </Link>
-          <Link to="/status/" className="NavBar-link">
-            Status
+          <Link to="/active/" className="NavBar-link">
+            Active Game
           </Link>
-          <Link to="/manualControl/" className="NavBar-link">
-            Manual Control
+          <Link to="/stats/" className="NavBar-link">
+            Stats
           </Link>
 
           <Link to="/settings" className="NavBar-link">
-            Settings
+            User Settings
           </Link>
         </div>
       )}

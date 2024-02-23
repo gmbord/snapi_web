@@ -2,17 +2,14 @@ import React, { useEffect, useState } from "react";
 import { socket } from "../../client-socket.js";
 import { get, post } from "../../utilities.js";
 
-import "./InfoView.css";
+import "./StatsView.css";
 
-/**
- *
- */
-const InfoView = ({ userId }) => {
+const StatsView = (props) => {
   return (
-    <div className="InfoView-container">
-      <h1>THIS IS THE INFO VIEW</h1>
+    <div>
+      <h1>This is the Stats Page</h1>
     </div>
   );
 };
 
-export default InfoView;
+export default StatsView;
