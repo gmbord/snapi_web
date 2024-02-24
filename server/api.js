@@ -91,14 +91,23 @@ router.get("/users", auth.ensureLoggedIn, (req, res) => {
 });
 
 router.get("/user", auth.ensureLoggedIn, (req, res) => {
-  console.log(req);
-  User.findById(req.body.id).then((user) => {
-    if (!user) {
-      res.send({});
-    } else {
-      res.send(user);
+  if (!req.query.id || req.query.id == "null") {
+    res.send({});
+  } else {
+    let userId = req.query.id;
+    if (userId.endsWith("?")) {
+      userId = userId.slice(0, -1); // Remove the trailing question mark
     }
-  });
+    console.log("userId");
+    console.log(userId);
+    User.findById(userId).then((user) => {
+      if (!user) {
+        res.send({});
+      } else {
+        res.send(user);
+      }
+    });
+  }
 });
 
 router.get("/queue", async (req, res) => {
