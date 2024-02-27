@@ -70,6 +70,21 @@ router.get("/game", auth.ensureLoggedIn, (req, res) => {
     });
 });
 
+router.get("/activeGames", auth.ensureLoggedIn, (req, res) => {
+  Game.find({ status: "active" })
+    .then((game) => {
+      if (!game) {
+        res.status(404).send({ msg: "Game not found" });
+      } else {
+        res.send(game);
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching game:", error);
+      res.status(500).send("Error fetching game");
+    });
+});
+
 router.get("/playerGames", auth.ensureLoggedIn, (req, res) => {
   const userId = req.user._id;
   Game.find({
@@ -85,6 +100,7 @@ router.get("/playerGames", auth.ensureLoggedIn, (req, res) => {
 });
 
 router.get("/users", auth.ensureLoggedIn, (req, res) => {
+  console.log(req);
   User.find().then((users) => {
     res.send(users);
   });

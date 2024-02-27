@@ -15,7 +15,9 @@ const QueueView = () => {
     get("/api/queue")
       .then((data) => {
         setQueue(data);
-        setGames(data?.games || []);
+        for (const qi of data.games) {
+          getGame(qi);
+        }
       })
       .catch((error) => {
         console.error("Error fetching queue data:", error);
@@ -24,7 +26,6 @@ const QueueView = () => {
     get("/api/users")
       .then((data) => {
         setUsers(data);
-        setSelectedPlayer1(data[0]._id); // Set the default selected player to the first user
       })
       .catch((error) => {
         console.error("Error fetching users:", error);
@@ -49,7 +50,33 @@ const QueueView = () => {
         });
     }
   };
+  const getGame = (id) => {
+    fetch(`/api/game?id=${id}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((game) => {
+        // Assuming `setGames` is a function that updates the games array
+        setGames((prevGames) => [...prevGames, game]);
+      })
+      .catch((error) => {
+        console.error("There was a problem with the fetch operation:", error);
+        // Handle error
+      });
+  };
+  console.log("Games");
+  console.log(games);
 
+  console.log("Users");
+  console.log(users);
+
+  const playerName = (id) => {
+    const user = users.find((user) => user._id === id);
+    return user ? user.name : null;
+  };
   // JSX to render the queue and games data
   return (
     <div>
@@ -62,8 +89,8 @@ const QueueView = () => {
               {games.map((gameId, index) => (
                 <div key={index}>
                   <h3>Game {index + 1}</h3>
-                  <p>{"Player 1:  " + games[index].player1}</p>
-                  <p>{"Player 2:  " + games[index].player2}</p>
+                  <p>{"Player 1:  " + playerName(games[index].player1)}</p>
+                  <p>{"Player 2:  " + playerName(games[index].player2)}</p>
                   {/* Render game details */}
                 </div>
               ))}
