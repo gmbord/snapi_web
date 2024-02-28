@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { get } from "../../utilities.js";
+import { get, post } from "../../utilities.js";
 
 import "./ActiveGameView.css";
 
 const ActiveGameView = (props) => {
   const [activeGames, setActiveGames] = useState([]);
   const [users, setUsers] = useState([]);
+  const [selectedPlayer1, setSelectedPlayer1] = useState("");
+  const [selectedPlayer2, setSelectedPlayer2] = useState("");
+  const [selectedPlayer3, setSelectedPlayer3] = useState("");
+  const [selectedPlayer4, setSelectedPlayer4] = useState("");
+  const [changingPlayer, setChangingPlayer] = useState(null);
 
   useEffect(() => {
     // Fetch active games data when component mounts
@@ -31,6 +36,35 @@ const ActiveGameView = (props) => {
     return user ? user.name : null;
   };
 
+  const handlePlayerChange = (position) => {
+    setChangingPlayer(position);
+  };
+
+  const handleConfirmChange = (position, selectedPlayer) => {
+    // Implement logic to update player in the state or send to the server
+    console.log(`Player at position ${position} changed to ${selectedPlayer}`);
+    setChangingPlayer(null);
+
+  };
+
+  const playerDropdown = (position, selectedPlayer, setSelectedPlayer) => (
+    <div>
+      <select
+        value={selectedPlayer}
+        onChange={(e) => setSelectedPlayer(e.target.value)}
+      >
+        {users.map((user) => (
+          <option key={user._id} value={user._id}>
+            {user.name}
+          </option>
+        ))}
+      </select>
+      <button onClick={() => handleConfirmChange(position, selectedPlayer)}>
+        Confirm
+      </button>
+    </div>
+  );
+
   return (
     <div style={{ textAlign: 'center' }}>
       {activeGames.map((game) => {
@@ -46,10 +80,48 @@ const ActiveGameView = (props) => {
                 <a href="/">
                   <img src="/table.jpg" style={{ width: '250px' }} />
                 </a>
-                <p style={{ position: 'absolute', top: 60, left: -100 }}>{playerName(game.player1)}</p>
-                <p style={{ position: 'absolute', bottom: 50, left: -100 }}>{playerName(game.player2)}</p>
-                <p style={{ position: 'absolute', top: 60, right: -35 }}>{playerName(game.player3)}</p>
-                <p style={{ position: 'absolute', bottom: 50, right: -35 }}>{playerName(game.player4)}</p>
+
+                <p style={{ position: 'absolute', top: 80, left: -100 }}>{playerName(game.player1)}</p>
+                <p style={{ position: 'absolute', bottom: 80, left: -100 }}>{playerName(game.player2)}</p>
+                <p style={{ position: 'absolute', top: 80, right: -35 }}>{playerName(game.player3)}</p>
+                <p style={{ position: 'absolute', bottom: 80, right: -35 }}>{playerName(game.player4)}</p>
+
+                <p style={{ position: 'absolute', top: 60, left: -100 }}>
+                  {changingPlayer === "player1" ? (
+                    playerDropdown("player1", selectedPlayer1, setSelectedPlayer1)
+                  ) : (
+                    <button onClick={() => handlePlayerChange("player1")}>
+                      Change
+                    </button>
+                  )}
+                </p>
+                <p style={{ position: 'absolute', bottom: 60, left: -100 }}>
+                  {changingPlayer === "player2" ? (
+                    playerDropdown("player2", selectedPlayer2, setSelectedPlayer2)
+                  ) : (
+                    <button onClick={() => handlePlayerChange("player2")}>
+                      Change
+                    </button>
+                  )}
+                </p>
+                <p style={{ position: 'absolute', top: 60, right: -100 }}>
+                  {changingPlayer === "player3" ? (
+                    playerDropdown("player3", selectedPlayer3, setSelectedPlayer3)
+                  ) : (
+                    <button onClick={() => handlePlayerChange("player3")}>
+                      Change
+                    </button>
+                  )}
+                </p>
+                <p style={{ position: 'absolute', bottom: 60, right: -100 }}>
+                  {changingPlayer === "player4" ? (
+                    playerDropdown("player4", selectedPlayer4, setSelectedPlayer4)
+                  ) : (
+                    <button onClick={() => handlePlayerChange("player4")}>
+                      Change
+                    </button>
+                  )}
+                </p>
 
                 <p style={{ position: 'absolute', top: 0, left: -500}}>{"Tosses"}</p>
                 <p style={{ position: 'absolute', top: 0, left: -400}}>{"Points"}</p>
