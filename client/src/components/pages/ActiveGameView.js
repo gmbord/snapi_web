@@ -105,10 +105,8 @@ const ActiveGameView = (props) => {
           <React.Fragment key={game._id}>
             <ul style={{ listStyleType: "none", padding: 0 }}>
               <li style={{ position: "relative", display: "inline-block" }}>
-              <p style={{fontSize: "20px"}}>Second Head</p>
-              <a href="/" onClick={(e) => e.preventDefault()}>
-                  <img src="/table.jpg" style={{ width: "250px", transform: "rotate(90deg)" }} />
-                </a>
+                <p style={{fontSize: "20px"}}>Second Head</p>
+                <img src="/table.jpg" style={{ width: "250px", transform: "rotate(90deg)" }} />
                 <p style = {{fontSize: "20px"}}>Dining</p>
 
                 <p style={{ position: "absolute", top: 40, left: -40 }}>
