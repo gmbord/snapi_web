@@ -44,9 +44,11 @@ const ActiveGameView = (props) => {
     // Implement logic to update player in the state or send to the server
     console.log(`Player at position ${position} changed to ${selectedPlayer}`);
     setChangingPlayer(null);
+  
     const requestBody = {
       id: game_id, // Assuming gameId is accessible
     };
+  
     switch (position) {
       case "player1":
         requestBody.player1 = selectedPlayer;
@@ -64,11 +66,12 @@ const ActiveGameView = (props) => {
         console.error("Invalid player number");
         return; // Stop execution if playerNumber is invalid
     }
-
+  
     post("/api/updateGame", requestBody)
       .then((updatedGame) => {
         console.log("Game updated:", updatedGame);
-        // Handle success
+        // Reload the page after successful update
+        window.location.reload();
       })
       .catch((error) => {
         console.error("Error updating game:", error);
