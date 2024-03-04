@@ -97,51 +97,52 @@ const ActiveGameView = (props) => {
         const team1Score = game.p1Stats[1] + game.p2Stats[1];
         const team2Score = game.p3Stats[1] + game.p4Stats[1];
         const headerText = `Score: ${team1Score} :  ${team2Score}`;
-
+  
         return (
           <React.Fragment key={game._id}>
-            <h1>{headerText}</h1>
             <ul style={{ listStyleType: "none", padding: 0 }}>
               <li style={{ position: "relative", display: "inline-block" }}>
+              <p style={{fontSize: "20px"}}>Second Head</p>
                 <a href="/">
-                  <img src="/table.jpg" style={{ width: "250px" }} />
+                  <img src="/table.jpg" style={{ width: "250px", transform: "rotate(90deg)" }} />
                 </a>
+                <p style = {{fontSize: "20px"}}>Dining</p>
 
-                <p style={{ position: "absolute", top: 80, left: -100 }}>
+                <p style={{ position: "absolute", top: 40, left: -40 }}>
                   {playerName(game.player1)}
                 </p>
-                <p style={{ position: "absolute", bottom: 80, left: -100 }}>
+                <p style={{ position: "absolute", top: 40, right: 0 }}>
                   {playerName(game.player2)}
                 </p>
-                <p style={{ position: "absolute", top: 80, right: -35 }}>
+                <p style={{ position: "absolute", bottom: 50, left: -40 }}>
                   {playerName(game.player3)}
                 </p>
-                <p style={{ position: "absolute", bottom: 80, right: -35 }}>
+                <p style={{ position: "absolute", bottom: 50, right: 0 }}>
                   {playerName(game.player4)}
                 </p>
 
-                <p style={{ position: "absolute", top: 60, left: -100 }}>
+                <p style={{ position: "absolute", top: 70, left: -10 }}>
                   {changingPlayer === "player1" ? (
                     playerDropdown("player1", selectedPlayer1, setSelectedPlayer1, game._id)
                   ) : (
                     <button onClick={() => handlePlayerChange("player1")}>Change</button>
                   )}
                 </p>
-                <p style={{ position: "absolute", bottom: 60, left: -100 }}>
+                <p style={{ position: "absolute", top: 70, right: 0 }}>
                   {changingPlayer === "player2" ? (
                     playerDropdown("player2", selectedPlayer2, setSelectedPlayer2, game._id)
                   ) : (
                     <button onClick={() => handlePlayerChange("player2")}>Change</button>
                   )}
                 </p>
-                <p style={{ position: "absolute", top: 60, right: -100 }}>
+                <p style={{ position: "absolute", bottom: 20, left: -10 }}>
                   {changingPlayer === "player3" ? (
                     playerDropdown("player3", selectedPlayer3, setSelectedPlayer3, game._id)
                   ) : (
                     <button onClick={() => handlePlayerChange("player3")}>Change</button>
                   )}
                 </p>
-                <p style={{ position: "absolute", bottom: 60, right: -100 }}>
+                <p style={{ position: "absolute", bottom: 20, right: -10 }}>
                   {changingPlayer === "player4" ? (
                     playerDropdown("player4", selectedPlayer4, setSelectedPlayer4, game._id)
                   ) : (
@@ -164,15 +165,15 @@ const ActiveGameView = (props) => {
                 <p style={{ position: "absolute", top: 60, left: -275 }}>{game.p1Stats[2]}</p>
                 <p style={{ position: "absolute", top: 60, left: -175 }}>{game.p1Stats[3]}</p>
 
-                <p style={{ position: "absolute", bottom: 50, left: -475 }}>{game.p2Stats[0]}</p>
-                <p style={{ position: "absolute", bottom: 50, left: -375 }}>{game.p2Stats[1]}</p>
-                <p style={{ position: "absolute", bottom: 50, left: -275 }}>{game.p2Stats[2]}</p>
-                <p style={{ position: "absolute", bottom: 50, left: -175 }}>{game.p2Stats[3]}</p>
+                <p style={{ position: "absolute", top: 60, right: -475 }}>{game.p2Stats[3]}</p>
+                <p style={{ position: "absolute", top: 60, right: -375 }}>{game.p2Stats[2]}</p>
+                <p style={{ position: "absolute", top: 60, right: -275 }}>{game.p2Stats[1]}</p>
+                <p style={{ position: "absolute", top: 60, right: -175 }}>{game.p2Stats[0]}</p>
 
-                <p style={{ position: "absolute", top: 60, right: -475 }}>{game.p3Stats[3]}</p>
-                <p style={{ position: "absolute", top: 60, right: -375 }}>{game.p3Stats[2]}</p>
-                <p style={{ position: "absolute", top: 60, right: -275 }}>{game.p3Stats[1]}</p>
-                <p style={{ position: "absolute", top: 60, right: -175 }}>{game.p3Stats[0]}</p>
+                <p style={{ position: "absolute", bottom: 50, left: -475 }}>{game.p3Stats[0]}</p>
+                <p style={{ position: "absolute", bottom: 50, left: -375 }}>{game.p3Stats[1]}</p>
+                <p style={{ position: "absolute", bottom: 50, left: -275 }}>{game.p3Stats[2]}</p>
+                <p style={{ position: "absolute", bottom: 50, left: -175 }}>{game.p3Stats[3]}</p>
 
                 <p style={{ position: "absolute", bottom: 50, right: -475 }}>{game.p4Stats[3]}</p>
                 <p style={{ position: "absolute", bottom: 50, right: -375 }}>{game.p4Stats[2]}</p>
