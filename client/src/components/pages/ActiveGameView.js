@@ -115,10 +115,10 @@ const ActiveGameView = (props) => {
                 <p style={{ position: "absolute", top: 40, right: 0 }}>
                   {playerName(game.player2)}
                 </p>
-                <p style={{ position: "absolute", bottom: 50, left: -40 }}>
+                <p style={{ position: "absolute", bottom: 45, left: -40 }}>
                   {playerName(game.player3)}
                 </p>
-                <p style={{ position: "absolute", bottom: 50, right: 0 }}>
+                <p style={{ position: "absolute", bottom: 45, right: 0 }}>
                   {playerName(game.player4)}
                 </p>
 
