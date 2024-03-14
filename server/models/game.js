@@ -9,10 +9,10 @@ const GameSchema = new mongoose.Schema({
   p2Stats: [Number],
   p3Stats: [Number],
   p4Stats: [Number],
-  time: { type: Date, default: Date.now },
   winner: Number,
   status: String,
 });
 
+GameSchema.set("timestamps", true);
 // compile model from schema
 module.exports = mongoose.model("game", GameSchema);

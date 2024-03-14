@@ -107,24 +107,24 @@ const QueueView = () => {
           <h2>Queue:</h2>
           {games.length > 0 ? (
             <div>
-              {games.map((game, index) => (
-                <div key={index}>
-                  <div>
-                    {/* Container for Game number and Remove button */}
-                    <div style={{ display: "inline-block", marginRight: "10px" }}>
-                      <h3>Game {index + 1}</h3>
+              {games
+                .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt)) // Sort games by createdAt
+                .map((game, index) => (
+                  <div key={index}>
+                    <div>
+                      <div style={{ display: "inline-block", marginRight: "10px" }}>
+                        <h3>Game {index + 1}</h3>
+                      </div>
+                      <div style={{ display: "inline-block", marginRight: "10px" }}>
+                        <button onClick={() => handleRemoveFromQueue(game._id)}>Remove</button>
+                      </div>
                     </div>
-                    <div style={{ display: "inline-block", marginRight: "10px" }}>
-                      <button onClick={() => handleRemoveFromQueue(game._id)}>Remove</button>
+                    <div>
+                      <p>{"Player 1:  " + playerName(game.player1)}</p>
+                      <p>{"Player 2:  " + playerName(game.player2)}</p>
                     </div>
                   </div>
-                  {/* Container for player names */}
-                  <div>
-                    <p>{"Player 1:  " + playerName(game.player1)}</p>
-                    <p>{"Player 2:  " + playerName(game.player2)}</p>
-                  </div>
-                </div>
-              ))}
+                ))}
             </div>
           ) : (
             <p>No games in the queue</p>
