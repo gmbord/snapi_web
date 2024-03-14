@@ -70,6 +70,19 @@ router.get("/game", auth.ensureLoggedIn, (req, res) => {
     });
 });
 
+// Route to remove a game by its ID
+router.post("/removeGame", async (req, res) => {
+  const { id } = req.body;
+  try {
+    // Find the game by its ID and delete it
+    await Game.findByIdAndDelete(id);
+    res.status(200).json({ message: "Game removed successfully" });
+  } catch (error) {
+    console.error("Error removing game:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 router.get("/activeGames", auth.ensureLoggedIn, (req, res) => {
   Game.find({ status: "active" })
     .then((game) => {
