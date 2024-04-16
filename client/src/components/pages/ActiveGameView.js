@@ -79,6 +79,7 @@ const ActiveGameView = (props) => {
       });
   };
 
+
   const playerDropdown = (position, selectedPlayer, setSelectedPlayer, game_id) => (
     <div>
       <select value={selectedPlayer} onChange={(e) => setSelectedPlayer(e.target.value)}>
@@ -149,6 +150,10 @@ const ActiveGameView = (props) => {
                   ) : (
                     <button onClick={() => handlePlayerChange("player4")}>Change</button>
                   )}
+                </p>
+                
+                <p style={{ position: "absolute", bottom: -50, right: 50 }}>
+                    <button onClick={() => finishGame(activeGames)}>Finish Game</button>
                 </p>
 
                 <p style={{ position: "absolute", top: 0, left: -500 }}>{"Tosses"}</p>
