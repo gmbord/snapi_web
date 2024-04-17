@@ -11,6 +11,7 @@ const ActiveGameView = (props) => {
   const [selectedPlayer3, setSelectedPlayer3] = useState("");
   const [selectedPlayer4, setSelectedPlayer4] = useState("");
   const [changingPlayer, setChangingPlayer] = useState(null);
+  const [needToSwitch, setNeedToSwitch] = useState(false);
 
   useEffect(() => {
     // Fetch active games data when component mounts
@@ -40,15 +41,91 @@ const ActiveGameView = (props) => {
     setChangingPlayer(position);
   };
 
+  const finishGame = async (activeGames) => {
+    const game = activeGames[0];
+    console.log(game);
+    const team1Score = game.p1Stats[1] + game.p2Stats[1];
+    const team2Score = game.p3Stats[1] + game.p4Stats[1];
+    let needToSwitch = false;
+
+    if (team1Score > team2Score) {
+      needToSwitch = true;
+    }
+
+    let newGame = null;
+    let q = null;
+
+    try {
+      const queueData = await get("/api/queue");
+      console.log(queueData);
+      newGame = queueData.games[0];
+      q = queueData.games.slice(1);
+    } catch (error) {
+      console.error("Error fetching queue data:", error);
+      return; // Exit the function if an error occurs
+    }
+
+    console.log(newGame);
+
+    try {
+      await post("/api/updateQueue", { games: q });
+      await post("/api/removeGame", { id: newGame._id });
+      console.log("Game removed from the database");
+    } catch (error) {
+      console.error("Error removing game from queue:", error);
+      // Handle error
+    }
+
+    if (needToSwitch) {
+      newGame.player3 = newGame.player1;
+      newGame.player4 = newGame.player2;
+      newGame.player1 = game.player1;
+      newGame.player2 = game.player2;
+    } else {
+      newGame.player3 = game.player3;
+      newGame.player4 = game.player4;
+    }
+
+    const requestBody = {
+      id: game._id,
+      status: "finished",
+    };
+
+    try {
+      const updatedGame = await post("/api/updateGame", requestBody);
+      console.log("Game updated:", updatedGame);
+      window.location.reload();
+    } catch (error) {
+      console.error("Error updating game:", error);
+      // Handle error
+    }
+
+    const requestBody2 = {
+      id: newGame._id,
+      status: "active",
+    };
+
+    try {
+      const updatedGame2 = await post("/api/updateGame", requestBody2);
+      console.log("Game updated:", updatedGame2);
+      window.location.reload();
+    } catch (error) {
+      console.error("Error updating game:", error);
+      // Handle error
+    }
+
+    setActiveGames([newGame]);
+  };
+
   const handleConfirmChange = (position, selectedPlayer, game_id) => {
     // Implement logic to update player in the state or send to the server
     console.log(`Player at position ${position} changed to ${selectedPlayer}`);
     setChangingPlayer(null);
-  
+
     const requestBody = {
       id: game_id, // Assuming gameId is accessible
     };
-  
+
     switch (position) {
       case "player1":
         requestBody.player1 = selectedPlayer;
@@ -66,7 +143,7 @@ const ActiveGameView = (props) => {
         console.error("Invalid player number");
         return; // Stop execution if playerNumber is invalid
     }
-  
+
     post("/api/updateGame", requestBody)
       .then((updatedGame) => {
         console.log("Game updated:", updatedGame);
@@ -78,7 +155,6 @@ const ActiveGameView = (props) => {
         // Handle error
       });
   };
-
 
   const playerDropdown = (position, selectedPlayer, setSelectedPlayer, game_id) => (
     <div>
@@ -101,14 +177,14 @@ const ActiveGameView = (props) => {
         const team1Score = game.p1Stats[1] + game.p2Stats[1];
         const team2Score = game.p3Stats[1] + game.p4Stats[1];
         const headerText = `Score: ${team1Score} :  ${team2Score}`;
-  
+
         return (
           <React.Fragment key={game._id}>
             <ul style={{ listStyleType: "none", padding: 0 }}>
               <li style={{ position: "relative", display: "inline-block" }}>
-                <p style={{fontSize: "20px"}}>Second Head</p>
+                <p style={{ fontSize: "20px" }}>Second Head</p>
                 <img src="/table.jpg" style={{ width: "250px", transform: "rotate(90deg)" }} />
-                <p style = {{fontSize: "20px"}}>Dining</p>
+                <p style={{ fontSize: "20px" }}>Dining</p>
 
                 <p style={{ position: "absolute", top: 40, left: -40 }}>
                   {playerName(game.player1)}
@@ -151,9 +227,9 @@ const ActiveGameView = (props) => {
                     <button onClick={() => handlePlayerChange("player4")}>Change</button>
                   )}
                 </p>
-                
+
                 <p style={{ position: "absolute", bottom: -50, right: 50 }}>
-                    <button onClick={() => finishGame(activeGames)}>Finish Game</button>
+                  <button onClick={() => finishGame(activeGames)}>Finish Game</button>
                 </p>
 
                 <p style={{ position: "absolute", top: 0, left: -500 }}>{"Tosses"}</p>
