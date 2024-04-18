@@ -11,7 +11,6 @@ const ActiveGameView = (props) => {
   const [selectedPlayer3, setSelectedPlayer3] = useState("");
   const [selectedPlayer4, setSelectedPlayer4] = useState("");
   const [changingPlayer, setChangingPlayer] = useState(null);
-  const [needToSwitch, setNeedToSwitch] = useState(false);
 
   useEffect(() => {
     // Fetch active games data when component mounts
