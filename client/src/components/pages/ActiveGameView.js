@@ -63,6 +63,8 @@ const ActiveGameView = (props) => {
       console.error("Error fetching queue data:", error);
       return; // Exit the function if an error occurs
     }
+    console.log("newGameId");
+    console.log(newGameId);
 
     // Fetch game data using the newGameId
     let newGame = null;
@@ -72,10 +74,12 @@ const ActiveGameView = (props) => {
       console.error("Error fetching game data:", error);
       return; // Exit the function if an error occurs
     }
+    console.log("newGame");
+    console.log(newGame);
 
     // Remove the fetched game from the queue
     try {
-      await post("/api/removeGame", { id: newGame._id });
+      await post("/api/updateQueue", { id: "65d90471fb4f1be701069c76", games: q });
       console.log("Game removed from the queue");
     } catch (error) {
       console.error("Error removing game from queue:", error);
@@ -95,11 +99,35 @@ const ActiveGameView = (props) => {
       console.error("Error updating finished game:", error);
       // Handle error
     }
+    let p1Id = null;
+    let p2Id = null;
+    let p3Id = null;
+    let p4Id = null;
+
+    if (needToSwitch) {
+      p1Id = game.player1;
+      p2Id = game.player2;
+      p3Id = newGame.player1;
+      p4Id = newGame.player2;
+    } else {
+      p3Id = game.player3;
+      p4Id = game.player4;
+      p1Id = newGame.player1;
+      p2Id = newGame.player2;
+    }
 
     // Update the status of the new game
     const requestBody2 = {
-      id: newGame._id,
+      id: newGameId,
       status: "active",
+      player1: p1Id,
+      player2: p2Id,
+      player3: p3Id,
+      player4: p4Id,
+      p1Stats: [0, 0, 0, 0],
+      p2Stats: [0, 0, 0, 0],
+      p3Stats: [0, 0, 0, 0],
+      p4Stats: [0, 0, 0, 0],
     };
 
     try {
@@ -112,6 +140,7 @@ const ActiveGameView = (props) => {
 
     // Set the active games array with the new game
     setActiveGames([newGame]);
+    window.location.reload();
   };
 
   const handleConfirmChange = (position, selectedPlayer, game_id) => {

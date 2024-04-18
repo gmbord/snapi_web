@@ -52,6 +52,7 @@ router.get("/games", auth.ensureLoggedIn, (req, res) => {
 });
 
 router.get("/game", auth.ensureLoggedIn, (req, res) => {
+  console.log("HIIII IM HERE $$$$$");
   let gameId = req.query.id; // Access query parameter 'id'
   if (gameId.endsWith("?")) {
     gameId = gameId.slice(0, -1); // Remove the trailing question mark
@@ -227,6 +228,9 @@ router.post("/updateGame", auth.ensureLoggedIn, (req, res) => {
       }
       if ("time" in req.body) {
         game.time = req.body.time;
+      }
+      if ("status" in req.body) {
+        game.status = req.body.status;
       }
       game.save().then((game) => res.send(game));
     }
