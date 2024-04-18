@@ -53,38 +53,97 @@ const ActiveGameView = (props) => {
 
     let newGameId = null;
     let q = null;
+    let queueData = null;
 
     try {
-      const queueData = await get("/api/queue");
-      console.log(queueData);
-      newGameId = queueData.games[0]; // Assuming this is correct
-      q = queueData.games.slice(1);
+      queueData = await get("/api/queue");
     } catch (error) {
       console.error("Error fetching queue data:", error);
       return; // Exit the function if an error occurs
     }
-    console.log("newGameId");
-    console.log(newGameId);
+
+    let createdGame = null;
+    if (queueData.games.length === 0) {
+      // make a new empty game
+      const requestBody = {
+        status: "active",
+      };
+
+      try {
+        createdGame = await post("/api/game", requestBody);
+      } catch (error) {
+        console.error("Error updating finished game:", error);
+        // Handle error
+      }
+    }
+    let newGame = null;
+    if (createdGame == null) {
+      console.log(queueData);
+      newGameId = queueData.games[0]; // Assuming this is correct
+      q = queueData.games.slice(1);
+      console.log("newGameId");
+      console.log(newGameId);
+      try {
+        newGame = await get(`/api/game?id=${newGameId}`);
+      } catch (error) {
+        console.error("Error fetching game data:", error);
+        return; // Exit the function if an error occurs
+      }
+      console.log("newGame");
+      console.log(newGame);
+
+      // Remove the fetched game from the queue
+      try {
+        await post("/api/updateQueue", { id: "65d90471fb4f1be701069c76", games: q });
+        console.log("Game removed from the queue");
+      } catch (error) {
+        console.error("Error removing game from queue:", error);
+        // Handle error
+      }
+      let p1Id = null;
+      let p2Id = null;
+      let p3Id = null;
+      let p4Id = null;
+
+      if (needToSwitch) {
+        p1Id = game.player1;
+        p2Id = game.player2;
+        p3Id = newGame.player1;
+        p4Id = newGame.player2;
+      } else {
+        p3Id = game.player3;
+        p4Id = game.player4;
+        p1Id = newGame.player1;
+        p2Id = newGame.player2;
+      }
+
+      // Update the status of the new game
+      const requestBody2 = {
+        id: newGameId,
+        status: "active",
+        player1: p1Id,
+        player2: p2Id,
+        player3: p3Id,
+        player4: p4Id,
+        p1Stats: [0, 0, 0, 0],
+        p2Stats: [0, 0, 0, 0],
+        p3Stats: [0, 0, 0, 0],
+        p4Stats: [0, 0, 0, 0],
+      };
+
+      try {
+        const updatedNewGame = await post("/api/updateGame", requestBody2);
+        console.log("New game updated:", updatedNewGame);
+      } catch (error) {
+        console.error("Error updating new game:", error);
+        // Handle error
+      }
+    } else {
+      newGameId = createdGame._id;
+      newGame = createdGame;
+    }
 
     // Fetch game data using the newGameId
-    let newGame = null;
-    try {
-      newGame = await get(`/api/game?id=${newGameId}`);
-    } catch (error) {
-      console.error("Error fetching game data:", error);
-      return; // Exit the function if an error occurs
-    }
-    console.log("newGame");
-    console.log(newGame);
-
-    // Remove the fetched game from the queue
-    try {
-      await post("/api/updateQueue", { id: "65d90471fb4f1be701069c76", games: q });
-      console.log("Game removed from the queue");
-    } catch (error) {
-      console.error("Error removing game from queue:", error);
-      // Handle error
-    }
 
     // Update the status of the finished game
     const requestBody = {
@@ -97,44 +156,6 @@ const ActiveGameView = (props) => {
       console.log("Finished game updated:", updatedGame);
     } catch (error) {
       console.error("Error updating finished game:", error);
-      // Handle error
-    }
-    let p1Id = null;
-    let p2Id = null;
-    let p3Id = null;
-    let p4Id = null;
-
-    if (needToSwitch) {
-      p1Id = game.player1;
-      p2Id = game.player2;
-      p3Id = newGame.player1;
-      p4Id = newGame.player2;
-    } else {
-      p3Id = game.player3;
-      p4Id = game.player4;
-      p1Id = newGame.player1;
-      p2Id = newGame.player2;
-    }
-
-    // Update the status of the new game
-    const requestBody2 = {
-      id: newGameId,
-      status: "active",
-      player1: p1Id,
-      player2: p2Id,
-      player3: p3Id,
-      player4: p4Id,
-      p1Stats: [0, 0, 0, 0],
-      p2Stats: [0, 0, 0, 0],
-      p3Stats: [0, 0, 0, 0],
-      p4Stats: [0, 0, 0, 0],
-    };
-
-    try {
-      const updatedNewGame = await post("/api/updateGame", requestBody2);
-      console.log("New game updated:", updatedNewGame);
-    } catch (error) {
-      console.error("Error updating new game:", error);
       // Handle error
     }
 

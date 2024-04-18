@@ -190,6 +190,9 @@ router.post("/game", auth.ensureLoggedIn, (req, res) => {
   if ("time" in req.body) {
     newGame.time = req.body.time;
   }
+  if ("status" in req.body) {
+    newGame.status = req.body.status;
+  }
 
   newGame.save().then((game) => res.send(game));
 });
