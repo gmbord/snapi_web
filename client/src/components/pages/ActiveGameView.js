@@ -52,40 +52,38 @@ const ActiveGameView = (props) => {
       needToSwitch = true;
     }
 
-    let newGame = null;
+    let newGameId = null;
     let q = null;
 
     try {
       const queueData = await get("/api/queue");
       console.log(queueData);
-      newGame = queueData.games[0];
+      newGameId = queueData.games[0]; // Assuming this is correct
       q = queueData.games.slice(1);
     } catch (error) {
       console.error("Error fetching queue data:", error);
       return; // Exit the function if an error occurs
     }
 
-    console.log(newGame);
-
+    // Fetch game data using the newGameId
+    let newGame = null;
     try {
-      await post("/api/updateQueue", { games: q });
+      newGame = await get(`/api/game?id=${newGameId}`);
+    } catch (error) {
+      console.error("Error fetching game data:", error);
+      return; // Exit the function if an error occurs
+    }
+
+    // Remove the fetched game from the queue
+    try {
       await post("/api/removeGame", { id: newGame._id });
-      console.log("Game removed from the database");
+      console.log("Game removed from the queue");
     } catch (error) {
       console.error("Error removing game from queue:", error);
       // Handle error
     }
 
-    if (needToSwitch) {
-      newGame.player3 = newGame.player1;
-      newGame.player4 = newGame.player2;
-      newGame.player1 = game.player1;
-      newGame.player2 = game.player2;
-    } else {
-      newGame.player3 = game.player3;
-      newGame.player4 = game.player4;
-    }
-
+    // Update the status of the finished game
     const requestBody = {
       id: game._id,
       status: "finished",
@@ -93,27 +91,27 @@ const ActiveGameView = (props) => {
 
     try {
       const updatedGame = await post("/api/updateGame", requestBody);
-      console.log("Game updated:", updatedGame);
-      window.location.reload();
+      console.log("Finished game updated:", updatedGame);
     } catch (error) {
-      console.error("Error updating game:", error);
+      console.error("Error updating finished game:", error);
       // Handle error
     }
 
+    // Update the status of the new game
     const requestBody2 = {
       id: newGame._id,
       status: "active",
     };
 
     try {
-      const updatedGame2 = await post("/api/updateGame", requestBody2);
-      console.log("Game updated:", updatedGame2);
-      window.location.reload();
+      const updatedNewGame = await post("/api/updateGame", requestBody2);
+      console.log("New game updated:", updatedNewGame);
     } catch (error) {
-      console.error("Error updating game:", error);
+      console.error("Error updating new game:", error);
       // Handle error
     }
 
+    // Set the active games array with the new game
     setActiveGames([newGame]);
   };
 
