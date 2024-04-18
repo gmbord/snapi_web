@@ -67,6 +67,10 @@ const ActiveGameView = (props) => {
       // make a new empty game
       const requestBody = {
         status: "active",
+        p1Stats: [0, 0, 0, 0],
+        p2Stats: [0, 0, 0, 0],
+        p3Stats: [0, 0, 0, 0],
+        p4Stats: [0, 0, 0, 0],
       };
 
       try {
