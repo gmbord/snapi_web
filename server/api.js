@@ -84,7 +84,7 @@ router.post("/removeGame", async (req, res) => {
   }
 });
 
-router.get("/activeGames", auth.ensureLoggedIn, (req, res) => {
+router.get("/activeGames", (req, res) => {
   Game.find({ status: "active" })
     .then((game) => {
       if (!game) {
@@ -198,6 +198,51 @@ router.post("/game", auth.ensureLoggedIn, (req, res) => {
 });
 
 router.post("/updateGame", auth.ensureLoggedIn, (req, res) => {
+  Game.findById(req.body.id).then((game) => {
+    if (!game) {
+      res.send({});
+    } else {
+      if ("player1" in req.body) {
+        game.player1 = req.body.player1;
+      }
+      if ("player2" in req.body) {
+        game.player2 = req.body.player2;
+      }
+      if ("player3" in req.body) {
+        game.player3 = req.body.player3;
+      }
+      if ("player4" in req.body) {
+        game.player4 = req.body.player4;
+      }
+      if ("p1Stats" in req.body) {
+        game.p1Stats = req.body.p1Stats;
+      }
+      if ("p2Stats" in req.body) {
+        game.p2Stats = req.body.p2Stats;
+      }
+      if ("p3Stats" in req.body) {
+        game.p3Stats = req.body.p3Stats;
+      }
+      if ("p4Stats" in req.body) {
+        game.p4Stats = req.body.p4Stats;
+      }
+      if ("winner" in req.body) {
+        game.winner = req.body.winner;
+      }
+      if ("time" in req.body) {
+        game.time = req.body.time;
+      }
+      if ("status" in req.body) {
+        game.status = req.body.status;
+      }
+      game.save().then((game) => res.send(game));
+    }
+  });
+});
+
+router.post("/updateGameExternal", (req, res) => {
+  console.log("&&&&&&&&&&");
+  console.log(req.body);
   Game.findById(req.body.id).then((game) => {
     if (!game) {
       res.send({});
