@@ -243,7 +243,7 @@ router.post("/updateGame", auth.ensureLoggedIn, (req, res) => {
 router.post("/updateGameExternal", (req, res) => {
   console.log("&&&&&&&&&&");
   console.log(req.body);
-  Game.findById(req.body.id).then((game) => {
+  Game.find({ status: "active" }).then((game) => {
     if (!game) {
       res.send({});
     } else {
