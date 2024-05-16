@@ -14,6 +14,7 @@ const ActiveGameView = (props) => {
 
   useEffect(() => {
     // Fetch active games data when component mounts
+    // Fetch active games data when component mounts
     get("/api/activeGames")
       .then((games) => {
         setActiveGames(games);
