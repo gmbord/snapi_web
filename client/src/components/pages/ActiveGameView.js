@@ -50,6 +50,9 @@ const ActiveGameView = (props) => {
 
     if (team1Score > team2Score) {
       needToSwitch = true;
+      game.winner = 1; // Update winner to 1 if team 1 wins
+    } else {
+      game.winner = 2; // Update winner to 2 if team 2 wins
     }
 
     let newGameId = null;
@@ -154,6 +157,7 @@ const ActiveGameView = (props) => {
     const requestBody = {
       id: game._id,
       status: "finished",
+      winner: game.winner,
     };
 
     try {

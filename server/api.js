@@ -13,6 +13,7 @@ const express = require("express");
 const User = require("./models/user");
 const Game = require("./models/game");
 const Queue = require("./models/queue");
+const Leaderboard = require("./models/leaderboard");
 
 // import authentication library
 const auth = require("./auth");
@@ -91,6 +92,21 @@ router.get("/activeGames", (req, res) => {
         res.status(404).send({ msg: "Game not found" });
       } else {
         res.send(game);
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching game:", error);
+      res.status(500).send("Error fetching game");
+    });
+});
+
+router.get("/finishedGames", (req, res) => {
+  Game.find({ status: "finished" })
+    .then((games) => {
+      if (!games) {
+        res.status(404).send({ msg: "Game not found" });
+      } else {
+        res.send(games);
       }
     })
     .catch((error) => {
@@ -318,6 +334,126 @@ router.post("/updateQueue", auth.ensureLoggedIn, (req, res) => {
       queue.save().then((queue) => res.send(queue));
     }
   });
+});
+
+router.get("/leaderboard", async (req, res) => {
+  try {
+    const queueId = "6647aec433b306f4faf34c29"; // Access query parameter 'id'
+    if (!queueId) {
+      return res.status(400).send({ msg: "Queue ID is required" });
+    }
+    const queue = await Leaderboard.findById(queueId);
+    if (!queue) {
+      return res.status(404).send({ msg: "Leaderboard not found" });
+    }
+    res.send(queue);
+  } catch (error) {
+    console.error("Error fetching leaderboard:", error);
+    res.status(500).send("Error fetching leaderboard");
+  }
+});
+
+const aggregateStats = (games) => {
+  const userStats = {};
+
+  games.forEach((game) => {
+    const players = [game.player1, game.player2, game.player3, game.player4].filter(
+      (player) => player
+    ); // Filter out null players
+    const stats = [game.p1Stats, game.p2Stats, game.p3Stats, game.p4Stats].filter(
+      (_, index) => game[`player${index + 1}`]
+    ); // Filter out corresponding null stats
+    const winner = game.winner;
+
+    players.forEach((playerId, index) => {
+      if (!userStats[playerId]) {
+        userStats[playerId] = {
+          tosses: 0,
+          points: 0,
+          catches: 0,
+          drops: 0,
+          wins: 0,
+          gamesPlayed: 0,
+        };
+      }
+
+      // Replace NaN and Infinity values with 0
+      const tosses = Number.isFinite(stats[index][0]) ? stats[index][0] : 0;
+      const points = Number.isFinite(stats[index][1]) ? stats[index][1] : 0;
+      const catches = Number.isFinite(stats[index][2]) ? stats[index][2] : 0;
+      const drops = Number.isFinite(stats[index][3]) ? stats[index][3] : 0;
+
+      userStats[playerId].tosses += tosses;
+      userStats[playerId].points += points;
+      userStats[playerId].catches += catches;
+      userStats[playerId].drops += drops;
+      userStats[playerId].gamesPlayed += 1;
+
+      if ((winner === 1 && index < 2) || (winner === 2 && index >= 2)) {
+        userStats[playerId].wins += 1;
+      }
+    });
+  });
+
+  return userStats;
+};
+
+// Route to update the leaderboard
+router.post("/updateLeaderboard", async (req, res) => {
+  const leaderboardId = "6647aec433b306f4faf34c29"; // Specified _id of the leaderboard document
+
+  try {
+    const games = await Game.find({ status: "finished" });
+
+    const userStats = aggregateStats(games);
+
+    const leaderboardEntries = {
+      games_played: [],
+      total_wins: [],
+      total_tosses: [],
+      total_points: [],
+      total_catches: [],
+      total_drops: [],
+      points_per_toss: [],
+      catches_per_drop: [],
+    };
+
+    const NULL_USER_ID = "65d8cec0218fb4ecca079baf";
+
+    // Inside the loop where you construct leaderboardEntries
+    Object.keys(userStats).forEach((userId) => {
+      const stats = userStats[userId];
+      const processedUserId = userId || NULL_USER_ID; // Replace null user ID with specified user ID
+
+      leaderboardEntries.games_played.push({ user: processedUserId, stat: stats.gamesPlayed });
+      leaderboardEntries.total_wins.push({ user: processedUserId, stat: stats.wins });
+      leaderboardEntries.total_tosses.push({ user: processedUserId, stat: stats.tosses });
+      leaderboardEntries.total_points.push({ user: processedUserId, stat: stats.points });
+      leaderboardEntries.total_catches.push({ user: processedUserId, stat: stats.catches });
+      leaderboardEntries.total_drops.push({ user: processedUserId, stat: stats.drops });
+
+      // Calculate points per toss, ensuring not to divide by zero
+      const pointsPerToss = stats.tosses !== 0 ? stats.points / stats.tosses : 0;
+      leaderboardEntries.points_per_toss.push({ user: processedUserId, stat: pointsPerToss });
+
+      // Calculate catches per drop, ensuring not to divide by zero
+      const catchesPerDrop = stats.drops !== 0 ? stats.catches / stats.drops : 0;
+      leaderboardEntries.catches_per_drop.push({ user: processedUserId, stat: catchesPerDrop });
+    });
+
+    // Sort and limit to top 5
+    Object.keys(leaderboardEntries).forEach((key) => {
+      leaderboardEntries[key].sort((a, b) => b.stat - a.stat).splice(5);
+    });
+
+    // Update the existing leaderboard document with the specified _id
+    await Leaderboard.findByIdAndUpdate(leaderboardId, leaderboardEntries, { new: true });
+
+    res.status(200).json({ message: "Leaderboard updated successfully" });
+  } catch (error) {
+    console.error("Error updating leaderboard:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 // anything else falls to this "not found" case
