@@ -30,7 +30,7 @@ const NavBar = ({ userId, handleLogin, handleLogout }) => {
   return (
     <nav className="NavBar-container">
       <a href="/">
-        <img src="/lion.png" style={{ width: '80px', height: '60px' }}/>
+        <img src="/lion.png" style={{ width: "80px", height: "60px" }} />
       </a>
 
       {userId && (
