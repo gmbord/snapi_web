@@ -357,15 +357,24 @@ const aggregateStats = (games) => {
   const userStats = {};
 
   games.forEach((game) => {
-    const players = [game.player1, game.player2, game.player3, game.player4].filter(
-      (player) => player
-    ); // Filter out null players
-    const stats = [game.p1Stats, game.p2Stats, game.p3Stats, game.p4Stats].filter(
-      (_, index) => game[`player${index + 1}`]
-    ); // Filter out corresponding null stats
+    const players = [game.player1, game.player2, game.player3, game.player4];
+    const stats = [game.p1Stats, game.p2Stats, game.p3Stats, game.p4Stats];
     const winner = game.winner;
 
+    const playerPositions = {}; // Object to store original positions
+
+    // Save the original positions of players
     players.forEach((playerId, index) => {
+      if (playerId) {
+        playerPositions[playerId] = index;
+      }
+    });
+
+    players.forEach((playerId) => {
+      if (!playerId) return; // Skip null players
+
+      const position = playerPositions[playerId]; // Get original position
+
       if (!userStats[playerId]) {
         userStats[playerId] = {
           tosses: 0,
@@ -378,10 +387,10 @@ const aggregateStats = (games) => {
       }
 
       // Replace NaN and Infinity values with 0
-      const tosses = Number.isFinite(stats[index][0]) ? stats[index][0] : 0;
-      const points = Number.isFinite(stats[index][1]) ? stats[index][1] : 0;
-      const catches = Number.isFinite(stats[index][2]) ? stats[index][2] : 0;
-      const drops = Number.isFinite(stats[index][3]) ? stats[index][3] : 0;
+      const tosses = Number.isFinite(stats[position][0]) ? stats[position][0] : 0;
+      const points = Number.isFinite(stats[position][1]) ? stats[position][1] : 0;
+      const catches = Number.isFinite(stats[position][2]) ? stats[position][2] : 0;
+      const drops = Number.isFinite(stats[position][3]) ? stats[position][3] : 0;
 
       userStats[playerId].tosses += tosses;
       userStats[playerId].points += points;
@@ -389,7 +398,8 @@ const aggregateStats = (games) => {
       userStats[playerId].drops += drops;
       userStats[playerId].gamesPlayed += 1;
 
-      if ((winner === 1 && index < 2) || (winner === 2 && index >= 2)) {
+      // Determine the winner based on original position
+      if ((winner === 1 && position < 2) || (winner === 2 && position >= 2)) {
         userStats[playerId].wins += 1;
       }
     });
