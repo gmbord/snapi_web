@@ -5,6 +5,7 @@ import "./StatsView.css";
 const StatsView = (props) => {
   const [leaderboard, setLeaderboard] = useState({});
   const [users, setUsers] = useState([]);
+  const [userStats, setUserStats] = useState(null);
 
   const fetchLeaderboard = async () => {
     try {
@@ -24,9 +25,19 @@ const StatsView = (props) => {
     }
   };
 
+  const fetchUserStats = async () => {
+    try {
+      const response = await get("/api/getUserStats");
+      setUserStats(response);
+    } catch (error) {
+      console.error("Error fetching user stats:", error);
+    }
+  };
+
   useEffect(() => {
     fetchLeaderboard();
     fetchUsers();
+    fetchUserStats();
   }, []);
 
   const getPlayerName = (userId) => {
@@ -49,41 +60,62 @@ const StatsView = (props) => {
 
   return (
     <div>
-      <h1>This is the Stats Page</h1>
+      <h1>Leader Board</h1>
       <button onClick={handleUpdateLeaderboard}>Update Leaderboard</button>
-      {Object.entries(leaderboard).map(([category, stats]) => {
-        // Exclude _id category
-        if (category === "_id") return null;
-
-        // Replace underscores with spaces and capitalize first letter of each word
-        const categoryName = category.split("_").map(capitalizeFirstLetter).join(" ");
-
-        return (
-          <div key={category}>
-            <h2>{categoryName}</h2>
-            {Array.isArray(stats) ? (
-              <table>
-                <thead>
-                  <tr>
-                    <th>Player</th>
-                    <th>Stat</th>
+      <div className="stats-grid">
+        {userStats && (
+          <div className="stats-box">
+            <h2>Your Stats</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.entries(userStats).map(([category, value]) => (
+                  <tr key={category}>
+                    <td>{capitalizeFirstLetter(category)}</td>
+                    <td>{value}</td>
                   </tr>
-                </thead>
-                <tbody>
-                  {stats.map(({ user, stat }) => (
-                    <tr key={user}>
-                      <td>{getPlayerName(user)}</td>
-                      <td>{stat}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : (
-              <p>No stats available for this category.</p>
-            )}
+                ))}
+              </tbody>
+            </table>
           </div>
-        );
-      })}
+        )}
+        {Object.entries(leaderboard).map(([category, stats]) => {
+          if (category === "_id") return null;
+
+          const categoryName = category.split("_").map(capitalizeFirstLetter).join(" ");
+
+          return (
+            <div className="stats-box" key={category}>
+              <h2>{categoryName}</h2>
+              {Array.isArray(stats) ? (
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Player</th>
+                      <th>Stat</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {stats.map(({ user, stat }) => (
+                      <tr key={user}>
+                        <td>{getPlayerName(user)}</td>
+                        <td>{stat}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <p>No stats available for this category.</p>
+              )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };

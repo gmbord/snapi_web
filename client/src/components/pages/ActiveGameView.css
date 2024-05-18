@@ -1,0 +1,79 @@
+.active-game-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  text-align: center;
+}
+
+.game-container {
+  background: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 10px;
+  max-width: 600px;
+  width: 100%;
+}
+
+.scoreboard {
+  display: flex;
+  flex-direction: column;
+}
+
+.team {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.team h3 {
+  margin-top: 0;
+}
+
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.finish-game-btn {
+  background-color: #28a745;
+  margin-top: 20px;
+}
+
+.finish-game-btn:hover {
+  background-color: #218838;
+}
+
+@media (min-width: 600px) {
+  .scoreboard {
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  .team {
+    flex: 1;
+    margin: 10px;
+  }
+}
+
+.active-game-view-container {
+  position: relative;
+}
+
+.table-background {
+  width: 300px; /* Adjust width as needed */
+  height: 600px; /* Adjust height as needed */
+  background-position: center;
+}

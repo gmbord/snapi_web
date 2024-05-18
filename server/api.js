@@ -466,6 +466,90 @@ router.post("/updateLeaderboard", async (req, res) => {
   }
 });
 
+const aggregateUserStats = (games, userId) => {
+  const userStats = {
+    tosses: 0,
+    points: 0,
+    catches: 0,
+    drops: 0,
+    wins: 0,
+    gamesPlayed: 0,
+  };
+
+  games.forEach((game) => {
+    const players = [game.player1, game.player2, game.player3, game.player4];
+    const stats = [game.p1Stats, game.p2Stats, game.p3Stats, game.p4Stats];
+    const winner = game.winner;
+
+    players.forEach((playerId, index) => {
+      if (playerId && playerId.toString() === userId.toString()) {
+        // Replace NaN and Infinity values with 0
+        const tosses = Number.isFinite(stats[index][0]) ? stats[index][0] : 0;
+        const points = Number.isFinite(stats[index][1]) ? stats[index][1] : 0;
+        const catches = Number.isFinite(stats[index][2]) ? stats[index][2] : 0;
+        const drops = Number.isFinite(stats[index][3]) ? stats[index][3] : 0;
+
+        userStats.tosses += tosses;
+        userStats.points += points;
+        userStats.catches += catches;
+        userStats.drops += drops;
+        userStats.gamesPlayed += 1;
+
+        if ((winner === 1 && index < 2) || (winner === 2 && index >= 2)) {
+          userStats.wins += 1;
+        }
+      }
+    });
+  });
+
+  return userStats;
+};
+
+router.get("/getUserStats", auth.ensureLoggedIn, async (req, res) => {
+  try {
+    const userId = req.user._id; // Assuming req.user is set by the authentication middleware
+    const finishedGames = await Game.find({
+      status: "finished",
+      $or: [{ player1: userId }, { player2: userId }, { player3: userId }, { player4: userId }],
+    });
+
+    const userStats = aggregateUserStats(finishedGames, userId);
+    res.json(userStats);
+  } catch (error) {
+    console.error("Error fetching user stats:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.get("/getUserName", auth.ensureLoggedIn, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.json({ name: user.name });
+  } catch (error) {
+    console.error("Error fetching user name:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.post("/updateUserName", auth.ensureLoggedIn, async (req, res) => {
+  const { name } = req.body;
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    user.name = name;
+    await user.save();
+    res.json({ success: true });
+  } catch (error) {
+    console.error("Error updating user name:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 // anything else falls to this "not found" case
 router.all("*", (req, res) => {
   console.log(`API route not found: ${req.method} ${req.url}`);
